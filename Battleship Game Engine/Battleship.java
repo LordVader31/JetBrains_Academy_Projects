@@ -4,8 +4,30 @@ import java.util.Scanner;
 public class Main {
 
     static char[][] battlefield = new char[10][10];
-    static final String[] ships = {"Aircraft Carrier", "Battleship", "Submarine", "Cruiser", "Destroyer"};
-    static final int[] shipLengths = {5, 4, 3, 3, 2};
+
+    public enum Ship {
+        AIRCRAFT_CARRIER("Aircraft Carrier", 5),
+        BATTLESHIP("Battleship", 4),
+        SUBMARINE("Submarine", 3),
+        CRUISER("Cruiser", 3),
+        DESTROYER("Destroyer", 2);
+
+        String shipName;
+        int shipLength;
+
+        Ship(String name, int length) {
+            shipLength = length;
+            shipName = name;
+        }
+
+        public String getShipName() {
+            return shipName;
+        }
+
+        public int getShipLength() {
+            return shipLength;
+        }
+    }
 
     public static void main(String[] args) {
         for (char[] row : battlefield) {
@@ -13,17 +35,31 @@ public class Main {
         }
 
         printBattlefield();
-        for (int i = 0; i < 5; i++) {
-            placeShips(i);
+        for (Ship ship : Ship.values()) {
+            placeShip(ship.getShipName(), ship.getShipLength());
             printBattlefield();
         }
         System.out.println("\nThe game starts!\n");
-        printBattlefield();
-        firingASalvo();
+        printFogOfWarWithSalvos();
+        while (isNavyAfloat()) {
+            firingASalvo();
+            printFogOfWarWithSalvos();
+        }
+        System.out.println("You sank the last ship. You won. Congratulations!");
+    }
+
+    private static boolean isNavyAfloat() {
+        for (char[] row : battlefield) {
+            for (char status : row) {
+                if (status == 'O')
+                    return true;
+            }
+        }
+        return false;
     }
 
     private static void printBattlefield() {
-        System.out.print("  ");
+        System.out.print("\n  ");
         for (int i = 1; i <= 10; i++){
             System.out.print(i + " ");
         }
@@ -35,13 +71,30 @@ public class Main {
             }
             row++;
         }
-        System.out.println();
+        System.out.println("\n");
     }
 
-    private static void placeShips(int pos) {
+    private static void printFogOfWarWithSalvos() {
+        System.out.print("\n  ");
+        for (int i = 1; i <= 10; i++){
+            System.out.print(i + " ");
+        }
+        int row = 0;
+        for (char ch = 'A'; ch <= 'J'; ch++){
+            System.out.print("\n" + ch + " ");
+            for (char status : battlefield[row]) {
+                if (status == 'X' || status == 'M')
+                    System.out.print(status + " ");
+                else
+                    System.out.print("~ ");
+            }
+            row++;
+        }
+        System.out.println("\n");
+    }
+
+    private static void placeShip(String shipType, int shipLength) {
         Scanner sc = new Scanner(System.in);
-        String shipType = ships[pos];
-        int shipLength = shipLengths[pos];
         System.out.println("\n\nEnter the coordinates of the " + shipType + " (" + shipLength + " cells): ");
         while (true) {
             String firstCoordinate = sc.next().toUpperCase();
@@ -52,7 +105,7 @@ public class Main {
             int columnOfFirst = Integer.parseInt(firstCoordinate.substring(1));
             int columnOfSecond = Integer.parseInt(secondCoordinate.substring(1));
 
-            if (!isCorrectCoordinates(rowOfFirst, rowOfSecond, columnOfFirst, columnOfSecond, pos))
+            if (!isCorrectCoordinates(rowOfFirst, rowOfSecond, columnOfFirst, columnOfSecond, shipType, shipLength))
                 continue;
 
             // NORMALIZE THE ROW AND COLUMN COORDINATES
@@ -78,7 +131,7 @@ public class Main {
         } 
     }
     
-    private static boolean isCorrectCoordinates(char roF, char roS, int coF, int coS, int pos) {
+    private static boolean isCorrectCoordinates(char roF, char roS, int coF, int coS, String ship, int length) {
         
         // CHECK FOR COORDINATES OUTSIDE THE BOARD
         if (roF > 'J' || roF < 'A' || roS > 'J' || roS < 'A') {
@@ -91,24 +144,23 @@ public class Main {
             return false;
         }
 
-        if (pos != -1) {
+        if (ship != null) {
             // CHECK FOR COORDINATES NOT CORRESPONDING TO STRAIGHT LINES
             if (roF != roS && coF != coS) {
                 System.out.println("Error! Wrong ship location! Try again:");
                 return false;
             } else if (roF == roS) {
-                if (Math.abs(coF - coS) + 1 != shipLengths[pos]) {
-                    System.out.println("Error! Wrong length of the " + ships[pos] + "! Try again:");
+                if (Math.abs(coF - coS) + 1 != length) {
+                    System.out.println("Error! Wrong length of the " + ship + "! Try again:");
                     return false;
                 }
             } else {
-                if (Math.abs(roF - roS) + 1 != shipLengths[pos]) {
-                    System.out.println("Error! Wrong length of the " + ships[pos] + "! Try again:");
+                if (Math.abs(roF - roS) + 1 != length) {
+                    System.out.println("Error! Wrong length of the " + ship + "! Try again:");
                     return false;
                 }
             }
         }
-
         return true;
     }
     
@@ -126,7 +178,7 @@ public class Main {
     }
 
     private static boolean isTouching(char roF, char roS, int coF, int coS) {
-        // CHECK FOR CROSSING OTHER SHIPS OR TOUCHING OTHER SHIPS
+        // CHECK FOR TOUCHING OTHER SHIPS
         boolean touch = false;
         for (int i = roF - 65; i <= roS - 65; i++) {
             for (int j = coF - 1; j <= coS - 1; j++) {
@@ -169,21 +221,20 @@ public class Main {
             char rowCoordinate = firingPos.charAt(0);
             int columnCoordinate = Integer.parseInt(firingPos.substring(1));
 
-            if (!isCorrectCoordinates(rowCoordinate, 'A', columnCoordinate, 9, -1)) {
+            if (!isCorrectCoordinates(rowCoordinate, 'A', columnCoordinate, 9, null, -1)) {
                 System.out.println("Error! You entered the wrong coordinates! Try again:");
                 continue;
             }
-
             if (battlefield[rowCoordinate - 65][columnCoordinate - 1] == 'O') {
                 battlefield[rowCoordinate - 65][columnCoordinate - 1] = 'X';
-                printBattlefield();
-                System.out.println("You hit a ship!");
+                printFogOfWarWithSalvos();
+                System.out.println("You hit a ship! Try again: ");
 
             }
             else if (battlefield[rowCoordinate - 65][columnCoordinate -1] == '~') {
                 battlefield[rowCoordinate - 65][columnCoordinate - 1] = 'M';
-                printBattlefield();
-                System.out.println("You missed!");
+                printFogOfWarWithSalvos();
+                System.out.println("You missed! Try again:");
             }
             break;
         }

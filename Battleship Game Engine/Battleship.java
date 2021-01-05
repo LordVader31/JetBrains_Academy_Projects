@@ -4,6 +4,7 @@ import java.util.Scanner;
 public class Main {
 
     static char[][] battlefield = new char[10][10];
+    static boolean isWartime;
 
     public enum Ship {
         AIRCRAFT_CARRIER("Aircraft Carrier", 5),
@@ -34,16 +35,21 @@ public class Main {
             Arrays.fill(row, '~');
         }
 
+        // SETTING THE NAVY
+        isWartime = false;
         printBattlefield();
         for (Ship ship : Ship.values()) {
             placeShip(ship.getShipName(), ship.getShipLength());
             printBattlefield();
         }
+
+        // WAR TIME
+        isWartime = true;
         System.out.println("\nThe game starts!\n");
-        printFogOfWarWithSalvos();
+        printBattlefield();
         while (isNavyAfloat()) {
             firingASalvo();
-            printFogOfWarWithSalvos();
+            //printFogOfWarWithSalvos();
         }
         System.out.println("You sank the last ship. You won. Congratulations!");
     }
@@ -67,26 +73,9 @@ public class Main {
         for (char ch = 'A'; ch <= 'J'; ch++){
             System.out.print("\n" + ch + " ");
             for (char position : battlefield[row]) {
-                System.out.print(position + " ");
-            }
-            row++;
-        }
-        System.out.println("\n");
-    }
-
-    private static void printFogOfWarWithSalvos() {
-        System.out.print("\n  ");
-        for (int i = 1; i <= 10; i++){
-            System.out.print(i + " ");
-        }
-        int row = 0;
-        for (char ch = 'A'; ch <= 'J'; ch++){
-            System.out.print("\n" + ch + " ");
-            for (char status : battlefield[row]) {
-                if (status == 'X' || status == 'M')
-                    System.out.print(status + " ");
-                else
+                if (isWartime && position == 'O')
                     System.out.print("~ ");
+                else System.out.print(position + " ");
             }
             row++;
         }
@@ -119,7 +108,7 @@ public class Main {
 
             // CHECK FOR CROSSING OR TOUCHING OTHER SHIPS
             boolean cross = isCrossing(rowOfFirst, rowOfSecond, columnOfFirst, columnOfSecond);
-            boolean touch = isTouching(rowOfFirst, rowOfSecond, columnOfFirst, columnOfSecond);
+            boolean touch = isTouching(rowOfFirst, rowOfSecond, columnOfFirst, columnOfSecond, false);
             if (cross || touch) continue;
 
             for (int i = rowOfFirst - 65; i <= rowOfSecond - 65; i++) {
@@ -177,8 +166,8 @@ public class Main {
         return false;
     }
 
-    private static boolean isTouching(char roF, char roS, int coF, int coS) {
-        // CHECK FOR TOUCHING OTHER SHIPS
+    private static boolean isTouching(char roF, char roS, int coF, int coS, boolean isShell) {
+        // CHECK FOR TOUCHING OTHER SHIPS OR PIECES OF SHIPS
         boolean touch = false;
         for (int i = roF - 65; i <= roS - 65; i++) {
             for (int j = coF - 1; j <= coS - 1; j++) {
@@ -203,6 +192,9 @@ public class Main {
                     if (coS <= 9)
                         touch = battlefield[i][coS] == 'O' || touch;
                 }
+                if (touch && isShell) {
+                    return true;
+                }
                 if (touch) {
                     System.out.println("Error! You placed it too close to another one. Try again:");
                     return true;
@@ -225,18 +217,25 @@ public class Main {
                 System.out.println("Error! You entered the wrong coordinates! Try again:");
                 continue;
             }
-            if (battlefield[rowCoordinate - 65][columnCoordinate - 1] == 'O') {
-                battlefield[rowCoordinate - 65][columnCoordinate - 1] = 'X';
-                printFogOfWarWithSalvos();
-                System.out.println("You hit a ship! Try again: ");
 
-            }
-            else if (battlefield[rowCoordinate - 65][columnCoordinate -1] == '~') {
+            char status = battlefield[rowCoordinate - 65][columnCoordinate - 1];
+            if (status == 'O' || status == 'X') {
+                battlefield[rowCoordinate - 65][columnCoordinate - 1] = 'X';
+                printBattlefield();
+                if (isSunken(rowCoordinate, columnCoordinate)) {
+                    System.out.println("You sank a ship! Specify a new target: ");
+                }
+                else System.out.println("You hit a ship! Try again: ");
+            } else if (status == '~' || status == 'M') {
                 battlefield[rowCoordinate - 65][columnCoordinate - 1] = 'M';
-                printFogOfWarWithSalvos();
+                printBattlefield();
                 System.out.println("You missed! Try again:");
             }
             break;
         }
+    }
+
+    private static boolean isSunken(char rowCo, int columnCo) {
+        return !isTouching(rowCo, rowCo, columnCo, columnCo, true);
     }
 }

@@ -2,60 +2,81 @@ package battleship;
 import java.util.Arrays;
 import java.util.Scanner;
 public class Main {
-
-    static char[][] battlefield = new char[10][10];
-    static boolean isWartime;
-
-    public enum Ship {
-        AIRCRAFT_CARRIER("Aircraft Carrier", 5),
-        BATTLESHIP("Battleship", 4),
-        SUBMARINE("Submarine", 3),
-        CRUISER("Cruiser", 3),
-        DESTROYER("Destroyer", 2);
-
-        String shipName;
-        int shipLength;
-
-        Ship(String name, int length) {
-            shipLength = length;
-            shipName = name;
-        }
-
-        public String getShipName() {
-            return shipName;
-        }
-
-        public int getShipLength() {
-            return shipLength;
-        }
-    }
-
     public static void main(String[] args) {
-        for (char[] row : battlefield) {
-            Arrays.fill(row, '~');
+
+        Battlefield p1 = new Battlefield();
+        Battlefield p2 = new Battlefield();
+
+        Ship[] ships = {new Ship("Aircraft Carrier", 5),
+                new Ship("Battleship", 4),
+                new Ship("Submarine", 3),
+                new Ship("Cruiser", 3),
+                new Ship("Destroyer", 2)};
+
+        // PLAYER 1 NAVY SETUP
+        System.out.println("\nPlayer 1, place your ships on the game field");
+        p1.printBattlefield(false);
+        for (int i = 0; i < 5; i++) {
+            ships[i].placeShip(p1);
+            p1.printBattlefield(false);
         }
 
-        // SETTING THE NAVY
-        isWartime = false;
-        printBattlefield();
-        for (Ship ship : Ship.values()) {
-            placeShip(ship.getShipName(), ship.getShipLength());
-            printBattlefield();
+        promptEnterKey();
+
+        // PLAYER 2 NAVY SETUP
+        System.out.println("\nPlayer 2, place your ships on the game field");
+        for (int i = 0; i < 5; i++) {
+            ships[i].placeShip(p2);
+            p2.printBattlefield(false);
         }
 
-        // WAR TIME
-        isWartime = true;
-        System.out.println("\nThe game starts!\n");
-        printBattlefield();
-        while (isNavyAfloat()) {
-            firingASalvo();
-            //printFogOfWarWithSalvos();
+        promptEnterKey();
+
+        //WARTIME
+        System.out.println("The game starts!");
+        boolean didP1Win = false;
+        while(isNavyAfloat(p1)) {
+            p2.printBattlefield(true);
+            printDivider();
+            p1.printBattlefield(false);
+            System.out.println("Player 1, it's your turn:");
+            firingASalvo(p2);
+
+            if (!isNavyAfloat(p2)) {
+                didP1Win = true;
+                break;
+            }
+
+            promptEnterKey();
+            p1.printBattlefield(true);
+            printDivider();
+            p2.printBattlefield(false);
+            System.out.println("Player 2, it's your turn:");
+            firingASalvo(p1);
+            promptEnterKey();
         }
-        System.out.println("You sank the last ship. You won. Congratulations!");
+
+        if (didP1Win)
+            System.out.println("Player 1 won the game!");
+        else
+            System.out.println("Player 2 won the game!");
     }
 
-    private static boolean isNavyAfloat() {
-        for (char[] row : battlefield) {
+    protected static void promptEnterKey() {
+        System.out.println("\nPress Enter and pass the move to another player");
+        new Scanner(System.in).nextLine();
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
+    protected static void printDivider() {
+        for (int i = 0; i < 11; i++) {
+            System.out.print("- ");
+        }
+    }
+
+    protected static boolean isNavyAfloat(Battlefield bf) {
+        for (char[] row : bf.battlefield) {
             for (char status : row) {
                 if (status == 'O')
                     return true;
@@ -63,179 +84,40 @@ public class Main {
         }
         return false;
     }
-
-    private static void printBattlefield() {
-        System.out.print("\n  ");
-        for (int i = 1; i <= 10; i++){
-            System.out.print(i + " ");
-        }
-        int row = 0;
-        for (char ch = 'A'; ch <= 'J'; ch++){
-            System.out.print("\n" + ch + " ");
-            for (char position : battlefield[row]) {
-                if (isWartime && position == 'O')
-                    System.out.print("~ ");
-                else System.out.print(position + " ");
-            }
-            row++;
-        }
-        System.out.println("\n");
-    }
-
-    private static void placeShip(String shipType, int shipLength) {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("\n\nEnter the coordinates of the " + shipType + " (" + shipLength + " cells): ");
-        while (true) {
-            String firstCoordinate = sc.next().toUpperCase();
-            String secondCoordinate = sc.next().toUpperCase();
-
-            char rowOfFirst = firstCoordinate.charAt(0);
-            char rowOfSecond = secondCoordinate.charAt(0);
-            int columnOfFirst = Integer.parseInt(firstCoordinate.substring(1));
-            int columnOfSecond = Integer.parseInt(secondCoordinate.substring(1));
-
-            if (!isCorrectCoordinates(rowOfFirst, rowOfSecond, columnOfFirst, columnOfSecond, shipType, shipLength))
-                continue;
-
-            // NORMALIZE THE ROW AND COLUMN COORDINATES
-            int temp = Math.max(columnOfFirst, columnOfSecond);
-            columnOfFirst = Math.min(columnOfFirst, columnOfSecond);
-            columnOfSecond = temp;
-
-            temp = rowOfFirst > rowOfSecond ? rowOfFirst : rowOfSecond;
-            rowOfFirst = rowOfFirst < rowOfSecond ? rowOfFirst : rowOfSecond;
-            rowOfSecond = (char) temp;
-
-            // CHECK FOR CROSSING OR TOUCHING OTHER SHIPS
-            boolean cross = isCrossing(rowOfFirst, rowOfSecond, columnOfFirst, columnOfSecond);
-            boolean touch = isTouching(rowOfFirst, rowOfSecond, columnOfFirst, columnOfSecond, false);
-            if (cross || touch) continue;
-
-            for (int i = rowOfFirst - 65; i <= rowOfSecond - 65; i++) {
-                for (int j = columnOfFirst - 1; j < columnOfSecond; j++) {
-                    battlefield[i][j] = 'O';
-                }
-            }
-            break;
-        } 
-    }
     
-    private static boolean isCorrectCoordinates(char roF, char roS, int coF, int coS, String ship, int length) {
-        
-        // CHECK FOR COORDINATES OUTSIDE THE BOARD
-        if (roF > 'J' || roF < 'A' || roS > 'J' || roS < 'A') {
-            System.out.print("\nError! Invalid Row Coordinates. Please enter a value between A and J.");
-            System.out.println(" Try again :");
-            return false;
-        } else if (coF > 10 || coF < 1 || coS > 10 || coS < 1) {
-            System.out.print("\nError! Invalid Column Coordinates. Please enter a value between 1 and 10.");
-            System.out.println(" Try again :");
-            return false;
-        }
 
-        if (ship != null) {
-            // CHECK FOR COORDINATES NOT CORRESPONDING TO STRAIGHT LINES
-            if (roF != roS && coF != coS) {
-                System.out.println("Error! Wrong ship location! Try again:");
-                return false;
-            } else if (roF == roS) {
-                if (Math.abs(coF - coS) + 1 != length) {
-                    System.out.println("Error! Wrong length of the " + ship + "! Try again:");
-                    return false;
-                }
-            } else {
-                if (Math.abs(roF - roS) + 1 != length) {
-                    System.out.println("Error! Wrong length of the " + ship + "! Try again:");
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    
-    private static boolean isCrossing(char roF, char roS, int coF, int coS) {
-        // CHECK FOR CROSSING OTHER SHIPS OR TOUCHING OTHER SHIPS
-        for (int i = roF - 65; i <= roS - 65; i++) {
-            for (int j = coF - 1; j <= coS - 1; j++) {
-                if (battlefield[i][j] == '0') {
-                    System.out.println("Error! Your ships cannot cross one another. Try again:");
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private static boolean isTouching(char roF, char roS, int coF, int coS, boolean isShell) {
-        // CHECK FOR TOUCHING OTHER SHIPS OR PIECES OF SHIPS
-        boolean touch = false;
-        for (int i = roF - 65; i <= roS - 65; i++) {
-            for (int j = coF - 1; j <= coS - 1; j++) {
-                if (roF == roS) {
-                    if (coF - 2 >= 0)
-                        touch = battlefield[roF - 65][coF - 2] == 'O';
-                    if (coS <= 9)
-                        touch = battlefield[roF - 65][coS] == 'O' || touch;
-
-                    if (roF - 66 >= 0)
-                        touch = battlefield[roF - 66][j] == 'O' || touch;
-                    if (roS - 64 <= 9)
-                        touch = battlefield[roS - 64][j] == 'O' || touch;
-                } else {
-                    if (roF - 66 >= 0)
-                        touch = battlefield[roF - 66][coF - 1] == 'O';
-                    if (roS - 64 <= 9)
-                        touch = battlefield[roS - 64][coF - 1] == 'O' || touch;
-
-                    if (coF - 2 >= 0)
-                        touch = battlefield[i][coF - 2] == 'O' || touch;
-                    if (coS <= 9)
-                        touch = battlefield[i][coS] == 'O' || touch;
-                }
-                if (touch && isShell) {
-                    return true;
-                }
-                if (touch) {
-                    System.out.println("Error! You placed it too close to another one. Try again:");
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private static void firingASalvo() {
+    protected static void firingASalvo(Battlefield bf) {
         Scanner num = new Scanner(System.in);
-        System.out.println("\nTake a shot!");
         while (true) {
             String firingPos = num.next().toUpperCase().trim();
 
             char rowCoordinate = firingPos.charAt(0);
             int columnCoordinate = Integer.parseInt(firingPos.substring(1));
 
-            if (!isCorrectCoordinates(rowCoordinate, 'A', columnCoordinate, 9, null, -1)) {
+            if (!bf.isCorrectCoordinates(rowCoordinate, 'A', columnCoordinate, 9, null)) {
                 System.out.println("Error! You entered the wrong coordinates! Try again:");
                 continue;
             }
 
-            char status = battlefield[rowCoordinate - 65][columnCoordinate - 1];
+            char status = bf.battlefield[rowCoordinate - 65][columnCoordinate - 1];
             if (status == 'O' || status == 'X') {
-                battlefield[rowCoordinate - 65][columnCoordinate - 1] = 'X';
-                printBattlefield();
-                if (isSunken(rowCoordinate, columnCoordinate)) {
-                    System.out.println("You sank a ship! Specify a new target: ");
+                bf.battlefield[rowCoordinate - 65][columnCoordinate - 1] = 'X';
+                bf.printBattlefield(true);
+                if (isSunken(rowCoordinate, columnCoordinate, bf)) {
+                    System.out.println("You sank a ship!");
                 }
-                else System.out.println("You hit a ship! Try again: ");
+                else System.out.println("You hit a ship! ");
             } else if (status == '~' || status == 'M') {
-                battlefield[rowCoordinate - 65][columnCoordinate - 1] = 'M';
-                printBattlefield();
-                System.out.println("You missed! Try again:");
+                bf.battlefield[rowCoordinate - 65][columnCoordinate - 1] = 'M';
+                bf.printBattlefield(true);
+                System.out.println("You missed!");
             }
             break;
         }
     }
 
-    private static boolean isSunken(char rowCo, int columnCo) {
-        return !isTouching(rowCo, rowCo, columnCo, columnCo, true);
+
+    protected static boolean isSunken(char rowCo, int columnCo, Battlefield bf) {
+        return !bf.isTouching(rowCo, rowCo, columnCo, columnCo, true);
     }
 }

@@ -1,13 +1,15 @@
 package battleship;
 import java.util.Arrays;
 import java.util.Scanner;
+import static java.util.stream.IntStream.range;
+
 public class Main {
     public static void main(String[] args) {
 
         Battlefield p1 = new Battlefield();
         Battlefield p2 = new Battlefield();
 
-        Ship[] ships = {new Ship("Aircraft Carrier", 5),
+        final Ship[] ships = {new Ship("Aircraft Carrier", 5),
                 new Ship("Battleship", 4),
                 new Ship("Submarine", 3),
                 new Ship("Cruiser", 3),
@@ -35,7 +37,7 @@ public class Main {
         //WARTIME
         System.out.println("The game starts!");
         boolean didP1Win = false;
-        while(isNavyAfloat(p1)) {
+        while(true) {
             p2.printBattlefield(true);
             printDivider();
             p1.printBattlefield(false);
@@ -53,25 +55,33 @@ public class Main {
             p2.printBattlefield(false);
             System.out.println("Player 2, it's your turn:");
             firingASalvo(p1);
-            promptEnterKey();
-        }
 
+            if (!isNavyAfloat(p1))
+                break;
+            else
+                promptEnterKey();
+        }
+        System.out.println("You sank the last ship. You won. Congratulations!");
         if (didP1Win)
             System.out.println("Player 1 won the game!");
         else
             System.out.println("Player 2 won the game!");
     }
 
-    protected static void promptEnterKey() {
-        System.out.println("\nPress Enter and pass the move to another player");
-        new Scanner(System.in).nextLine();
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+
+    private static void promptEnterKey() {
+        System.out.println("Press Enter and pass the move to another player");
+        new Scanner(System.in);.nextLine();
+        clearScreen();
+    }
+
+    private static void clearScreen() {
+        range(0, 25).forEach(i -> System.out.println());
     }
 
     protected static void printDivider() {
-        for (int i = 0; i < 11; i++) {
-            System.out.print("- ");
+        for (int i = 1; i <= 20; i++) {
+            System.out.print("-");
         }
     }
 
@@ -85,7 +95,6 @@ public class Main {
         return false;
     }
     
-
     protected static void firingASalvo(Battlefield bf) {
         Scanner num = new Scanner(System.in);
         while (true) {
@@ -115,7 +124,6 @@ public class Main {
             break;
         }
     }
-
 
     protected static boolean isSunken(char rowCo, int columnCo, Battlefield bf) {
         return !bf.isTouching(rowCo, rowCo, columnCo, columnCo, true);

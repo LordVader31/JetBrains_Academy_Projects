@@ -1,16 +1,30 @@
+package Services;
+
 class Result extends Board {
-    public String determineResult() {
-        if (returnResult(b, 'X'))
+
+    public Result() {
+        super();
+    }
+
+    public Result(Board b) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                this.board[i][j] = b.board[i][j];
+            }
+        }
+    }
+
+    protected String determineResult() {
+        if (isWinner('X'))
             return GameState.XWIN.getGameOutput();
-        else if (returnResult(b, 'O'))
+        else if (isWinner('O'))
             return GameState.OWIN.getGameOutput();
         else if (isComplete())
             return GameState.DRAW.getGameOutput();
-        else
-            GameState.DNF.getGameOutput();
+        else return GameState.DNF.getGameOutput();
     }
 
-    public boolean isWinner(char piece) {
+    private boolean isWinner(char piece) {
         // ROW WINS?
         for (int i = 0; i < 3; i++) {
             if (board[i][0] == piece && board[i][1] == piece && board[i][2] == piece)
@@ -24,10 +38,9 @@ class Result extends Board {
         }
 
         // DIAGONAL WINS?
-        if (board[0][0] == piece && board[1][1] == piece && board[2][2] == piece) return true;
-        else if (board[0][2] == piece && board[1][1] == piece && board[2][0] == piece) return true;
-
-        // NO WINS
-        return false;
+        if (board[0][0] == piece && board[1][1] == piece && board[2][2] == piece)
+            return true;
+        else
+            return board[0][2] == piece && board[1][1] == piece && board[2][0] == piece;
     }
 }

@@ -1,32 +1,39 @@
+package TicTacToe;
+
+import TicTacToe.Players.Easy;
+
 import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in), txt = new Scanner(System.in);
-        System.out.println("Enter the cells :");
-        String state = sc.next().trim().toUpperCase();
 
-        Board b = new Board(state);
-        b.displayBoard();
+        Board board = new Board();
+        Result gameRes = new Result();
+        board.displayBoard();
 
-        System.out.println("\nEnter coordinates");
-        String coordinates = txt.nextLine().trim();
-        while (!isValidCoordinates(coordinates)) {
-            System.out.println("\nEnter coordinates");
-            coordinates = txt.nextLine().trim();
+        Easy ePlayer = new Easy(board);
+
+        while (!board.isComplete()) {
+            System.out.println("Enter the coordinates :");
+            String coordinates = txt.nextLine();
+            if (!isValidCoordinates(coordinates)) continue;
+            coordinates = coordinates.replaceAll(" ", "");
+            int row = coordinates.charAt(0) - 48;
+            int column = coordinates.charAt(1) - 48;
+
+            board.placePiece(row, column, 'X');
+            board.displayBoard();
+
+            System.out.println(gameRes.determineResultOutput());
+
+            ePlayer.reconfigureBoard(board);
+            System.out.println("Making move level \"easy\"");
+            board = ePlayer.makeAMove();
+            board.displayBoard();
+            System.out.println(gameRes.determineResultOutput());
+
         }
-        coordinates = coordinates.replaceAll(" ", "");
-        int row = coordinates.charAt(0) - 48;
-        int column = coordinates.charAt(1) - 48;
-
-        if (b.decidedWhoseTurn() == 'X')
-            b.placePiece(row, column, 'X');
-        else
-            b.placePiece(row, column, 'O');
-
-        Result res = new Result(b);
-        res.displayBoard();
-        //b.displayBoard();
-        System.out.println(res.determineResult());
     }
 
     public static boolean isValidCoordinates(String coordinates) {

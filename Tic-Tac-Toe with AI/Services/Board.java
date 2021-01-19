@@ -1,13 +1,26 @@
-package Services;
+package TicTacToe;
+
 import java.util.Arrays;
 
-class Board {
-    char[][] board;
+public class Board {
+    public static char[][] board;
 
     public Board() {
         board = new char[3][3];
         for(char[] row : board)
             Arrays.fill(row, ' ');
+    }
+
+    public Board(char[][] config) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (config[i][j] == 'X')
+                    board[i][j] = 'X';
+                else if (config[i][j] == 'O')
+                    board[i][j] = 'O';
+                else board[i][j] = ' ';
+            }
+        }
     }
 
     public Board(String initialState) {

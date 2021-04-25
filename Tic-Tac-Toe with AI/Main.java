@@ -6,11 +6,10 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in), txt = new Scanner(System.in);
+        Scanner txt = new Scanner(System.in);
 
         // SETTING UP THE BOARD
         Board board = new Board();
-        tictactoe.Result gameRes = new tictactoe.Result();
         board.displayBoard();
 
         // DEFINING THE EASY PLAYER
@@ -18,7 +17,7 @@ public class Main {
 
         while (!board.isComplete()) {
             // S1 : ACCEPTING THE COORDINATES
-            System.out.println("Enter the coordinates :");
+            System.out.println("Enter the coordinates:");
             String coordinates = txt.nextLine();
             if (!isValidCoordinates(coordinates))
                 continue;

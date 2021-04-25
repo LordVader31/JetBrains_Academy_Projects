@@ -1,46 +1,40 @@
-package Services;
+package tictactoe;
 
-class Result extends Board {
+class Result {
 
-    public Result() {
-        super();
-    }
-
-    public Result(Board b) {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                this.board[i][j] = b.board[i][j];
-            }
+    protected static boolean determineResultOutput(Board game) {
+        if (isWinner(game, 'X')) {
+            System.out.println(GameState.XWIN.getGameOutput());
+            return true;
+        } else if (isWinner(game, 'O')) {
+            System.out.println(GameState.OWIN.getGameOutput());
+            return true;
+        } else if (game.isComplete()) {
+            System.out.println(GameState.DRAW.getGameOutput());
+            return true;
+        } else {
+            //System.out.println(GameState.DNF.getGameOutput());
+            return false;
         }
     }
 
-    protected String determineResult() {
-        if (isWinner('X'))
-            return GameState.XWIN.getGameOutput();
-        else if (isWinner('O'))
-            return GameState.OWIN.getGameOutput();
-        else if (isComplete())
-            return GameState.DRAW.getGameOutput();
-        else return GameState.DNF.getGameOutput();
-    }
-
-    private boolean isWinner(char piece) {
+    private static boolean isWinner(Board game, char piece) {
         // ROW WINS?
         for (int i = 0; i < 3; i++) {
-            if (board[i][0] == piece && board[i][1] == piece && board[i][2] == piece)
+            if (game.board[i][0] == piece && game.board[i][1] == piece && game.board[i][2] == piece)
                 return true;
         }
 
         // COLUMN WINS?
         for (int i = 0; i < 3; i++) {
-            if (board[0][i] == piece && board[1][i] == piece && board[2][i] == piece)
+            if (game.board[0][i] == piece && game.board[1][i] == piece && game.board[2][i] == piece)
                 return true;
         }
 
         // DIAGONAL WINS?
-        if (board[0][0] == piece && board[1][1] == piece && board[2][2] == piece)
+        if (game.board[0][0] == piece && game.board[1][1] == piece && game.board[2][2] == piece)
             return true;
         else
-            return board[0][2] == piece && board[1][1] == piece && board[2][0] == piece;
+            return game.board[0][2] == piece && game.board[1][1] == piece && game.board[2][0] == piece;
     }
 }

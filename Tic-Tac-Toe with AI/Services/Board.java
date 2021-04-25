@@ -49,7 +49,7 @@ public class Board {
     }
 
     protected void displayBoard() {
-        System.out.println("\n");
+        //System.out.println("\n");
         for (int i = 1; i <= 9 ; i++) {
             System.out.print("-");
         }
@@ -64,13 +64,9 @@ public class Board {
         for (int i = 1; i <= 9 ; i++) {
             System.out.print("-");
         }
-        System.out.println("\n");
+        System.out.print("\n");
     }
-
-    protected char decidedWhoseTurn() {
-        return countPiece('X') == countPiece('O') ? 'X' : 'O';
-    }
-
+    
     private int countPiece(char piece) {
         int counter = 0;
         for (int i = 0; i < 3; i++) {

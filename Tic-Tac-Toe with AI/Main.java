@@ -1,6 +1,6 @@
-package TicTacToe;
+package tictactoe;
 
-import TicTacToe.Players.Easy;
+import tictactoe.Players.Easy;
 
 import java.util.Scanner;
 
@@ -8,31 +8,42 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in), txt = new Scanner(System.in);
 
+        // SETTING UP THE BOARD
         Board board = new Board();
-        Result gameRes = new Result();
+        tictactoe.Result gameRes = new tictactoe.Result();
         board.displayBoard();
 
-        Easy ePlayer = new Easy(board);
+        // DEFINING THE EASY PLAYER
+        Easy ePlayer = new Easy();
 
         while (!board.isComplete()) {
+            // S1 : ACCEPTING THE COORDINATES
             System.out.println("Enter the coordinates :");
             String coordinates = txt.nextLine();
-            if (!isValidCoordinates(coordinates)) continue;
+            if (!isValidCoordinates(coordinates))
+                continue;
             coordinates = coordinates.replaceAll(" ", "");
             int row = coordinates.charAt(0) - 48;
             int column = coordinates.charAt(1) - 48;
 
+            // S2 : PLACING THE PIECE ON THE BOARD
             board.placePiece(row, column, 'X');
             board.displayBoard();
 
-            System.out.println(gameRes.determineResultOutput());
-
-            ePlayer.reconfigureBoard(board);
+            // S3 : DETERMINING THE RESULT OF THE MOVE
+            boolean result = Result.determineResultOutput(board);
+            if (result) {
+                System.exit(0);
+            }
             System.out.println("Making move level \"easy\"");
-            board = ePlayer.makeAMove();
+            ePlayer.makeAMove(board);
             board.displayBoard();
-            System.out.println(gameRes.determineResultOutput());
 
+            // S3 : DETERMINING THE RESULT OF THE MOVE
+            result = Result.determineResultOutput(board);
+            if (result) {
+                System.exit(0);
+            }
         }
     }
 

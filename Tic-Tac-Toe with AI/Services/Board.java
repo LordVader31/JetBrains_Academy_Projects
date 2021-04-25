@@ -1,9 +1,9 @@
-package TicTacToe;
+package tictactoe;
 
 import java.util.Arrays;
 
 public class Board {
-    public static char[][] board;
+    public char[][] board;
 
     public Board() {
         board = new char[3][3];
@@ -12,10 +12,12 @@ public class Board {
     }
 
     public Board(char[][] config) {
+        this();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (config[i][j] == 'X')
+                if (config[i][j] == 'X') {
                     board[i][j] = 'X';
+                }
                 else if (config[i][j] == 'O')
                     board[i][j] = 'O';
                 else board[i][j] = ' ';

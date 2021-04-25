@@ -8,16 +8,12 @@ public class Easy extends Engine {
     @Override
     public void makeAMove(Board game) {
         Random random = new Random();
-        int choice = 1 + random.nextInt(2);
-        int row = choice;
-        choice = 1 + random.nextInt(2);
-        int column = choice;
-        System.out.printf("ROW : [%d], COLUMN : [%d]", row, column);
+        int row = random.nextInt(9) / 3;
+        int column = random.nextInt(9) % 3;
 
         while (game.board[row][column] == 'X' || game.board[row][column] == 'O') {
-            row = random.nextInt(2);
-            column = 1 + random.nextInt(2);
-            System.out.printf("ROW : [%d], COLUMN : [%d]\n", row, column);
+            row = random.nextInt(9) / 3;
+            column = random.nextInt(9) % 3;
         }
 
         game.board[row][column] = 'O';

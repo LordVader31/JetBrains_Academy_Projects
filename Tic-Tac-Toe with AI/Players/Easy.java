@@ -1,33 +1,25 @@
-package TicTacToe.Players;
+package tictactoe.Players;
 
-import TicTacToe.Board;
-import java.util.Arrays;
+import tictactoe.Board;
+import java.util.Random;
 
-public class Easy extends Player {
-
-    public Easy() {
-        super();
-        board = new char[3][3];
-        for(char[] row : board)
-            Arrays.fill(row, ' ');
-    }
-
-    public Easy(Board b) {
-        this();
-        reconfigureBoard(b);
-    }
+public class Easy extends Engine {
 
     @Override
-    public Board makeAMove() {
-        int row = (int) (Math.floor(Math.random()) * 3);
-        int column = (int) (Math.floor(Math.random()) * 3);
+    public void makeAMove(Board game) {
+        Random random = new Random();
+        int choice = 1 + random.nextInt(2);
+        int row = choice;
+        choice = 1 + random.nextInt(2);
+        int column = choice;
+        System.out.printf("ROW : [%d], COLUMN : [%d]", row, column);
 
-        while (board[row][column] == 'X' || board[row][column] == 'O') {
-            row = (int) (Math.floor(Math.random()) * 3);
-            column = (int) (Math.floor(Math.random()) * 3);
+        while (game.board[row][column] == 'X' || game.board[row][column] == 'O') {
+            row = random.nextInt(2);
+            column = 1 + random.nextInt(2);
+            System.out.printf("ROW : [%d], COLUMN : [%d]\n", row, column);
         }
 
-        board[row][column] = 'O';
-        return new Board(board);
-    }
+        game.board[row][column] = 'O';
+    }// end of void makeMove(Board)
 }//end of class

@@ -1,6 +1,8 @@
+================
 MIT License
+================
 
-Copyright (c) 2020 Keane Jonathan Moraes
+Copyright (c) 2021 Keane Moraes
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

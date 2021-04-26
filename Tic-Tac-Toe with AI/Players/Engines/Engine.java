@@ -1,8 +1,16 @@
-package tictactoe.Players;
+package tictactoe.Players.Engines;
 import tictactoe.Board;
+import tictactoe.Players.Player;
+import java.util.Random;
 
-abstract class Engine {
-    char playerType;
+public abstract class Engine extends Player {
 
-    public abstract void makeAMove(Board game);
+    protected int[] generateRandomCoordinates() {
+        Random random = new Random();
+        int[] randomCoord = new int[2];
+        randomCoord[0] = random.nextInt(9) / 3;
+        randomCoord[1] = random.nextInt(9) % 3;
+
+        return randomCoord;
+    }
 }

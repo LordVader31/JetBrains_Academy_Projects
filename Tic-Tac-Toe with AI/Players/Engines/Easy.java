@@ -1,9 +1,8 @@
-package tictactoe.Players;
+package tictactoe.Players.Engines;
 
 import tictactoe.Board;
-import java.util.Random;
 
-public class Easy extends Engine {
+final public class Easy extends Engine {
 
     public Easy(char playerType) {
         this.playerType = playerType;
@@ -14,18 +13,19 @@ public class Easy extends Engine {
     }
 
     public char getPlayerType() {
-        return playerType;
+        return this.playerType;
     }
 
     @Override
     public void makeAMove(Board game) {
-        Random random = new Random();
-        int row = random.nextInt(9) / 3;
-        int column = random.nextInt(9) % 3;
 
+        int[] randomCoord = generateRandomCoordinates();
+        int row = randomCoord[0];
+        int column = randomCoord[1];
         while (game.board[row][column] == 'X' || game.board[row][column] == 'O') {
-            row = random.nextInt(9) / 3;
-            column = random.nextInt(9) % 3;
+            randomCoord = generateRandomCoordinates();
+            row = randomCoord[0];
+            column = randomCoord[1];
         }
 
         game.board[row][column] = playerType;

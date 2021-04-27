@@ -3,19 +3,24 @@ import java.util.Arrays;
 
 public class Board {
     public char[][] board;
-    public final int NO_OF_ROWS = 3;
-    public final int NO_OF_COLUMNS = 3;
+    public int NO_OF_ROWS;
+    public int NO_OF_COLUMNS;
 
     public Board() {
+        NO_OF_ROWS = 3;
+        NO_OF_COLUMNS = 3;
         board = new char[NO_OF_ROWS][NO_OF_COLUMNS];
         for(char[] row : board)
             Arrays.fill(row, ' ');
+
     }
 
     public Board(char[][] config) {
         this();
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        NO_OF_ROWS = config.length;
+        NO_OF_COLUMNS = config[0].length;
+        for (int i = 0; i < NO_OF_ROWS; i++) {
+            for (int j = 0; j < NO_OF_COLUMNS; j++) {
                 if (config[i][j] == 'X') {
                     board[i][j] = 'X';
                 }
@@ -40,8 +45,8 @@ public class Board {
     }
 
     protected boolean isComplete() {
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < NO_OF_ROWS; i++) {
+            for (int j = 0; j < NO_OF_COLUMNS; j++) {
                 if (board[i][j] == ' ')
                     return false;
             }
@@ -50,18 +55,18 @@ public class Board {
     }
 
     public void displayBoard() {
-        for (int i = 1; i <= 9 ; i++) {
+        for (int i = 1; i <= NO_OF_ROWS * NO_OF_COLUMNS ; i++) {
             System.out.print("-");
         }
         System.out.println();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < NO_OF_ROWS; i++) {
             System.out.print("| ");
-            for (int j = 0; j < 3; j++) {
+            for (int j = 0; j < NO_OF_ROWS; j++) {
                 System.out.print(board[i][j] + " ");
             }
             System.out.println("|");
         }
-        for (int i = 1; i <= 9 ; i++) {
+        for (int i = 1; i <= NO_OF_ROWS * NO_OF_COLUMNS ; i++) {
             System.out.print("-");
         }
         System.out.print("\n");

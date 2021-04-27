@@ -1,12 +1,13 @@
 package tictactoe;
-
 import java.util.Arrays;
 
 public class Board {
     public char[][] board;
+    public final int NO_OF_ROWS = 3;
+    public final int NO_OF_COLUMNS = 3;
 
     public Board() {
-        board = new char[3][3];
+        board = new char[NO_OF_ROWS][NO_OF_COLUMNS];
         for(char[] row : board)
             Arrays.fill(row, ' ');
     }
@@ -48,8 +49,7 @@ public class Board {
         return true;
     }
 
-    protected void displayBoard() {
-        //System.out.println("\n");
+    public void displayBoard() {
         for (int i = 1; i <= 9 ; i++) {
             System.out.print("-");
         }
@@ -66,22 +66,13 @@ public class Board {
         }
         System.out.print("\n");
     }
-    
-    private int countPiece(char piece) {
-        int counter = 0;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (board[i][j] == piece)
-                    counter++;
-            }
-        }
-        return counter;
-    }
 
-    protected void placePiece(int row, int column, char piece) {
-        if (board[row-1][column-1] != ' ')
+    public boolean placePiece(int row, int column, char piece) {
+        if (board[row - 1][column - 1] != ' ') {
             System.out.println("This cell is occupied! Choose another one!");
-        else
-            board[row-1][column-1] = piece;
+            return false;
+        }
+        board[row - 1][column - 1] = piece;
+        return true;
     }
 }

@@ -1,8 +1,15 @@
 package tictactoe;
 
-class Result {
+final public class Result {
 
-    protected static boolean determineResultOutput(Board game) {
+    /**
+     * determineResultOutput(Board)
+     * ouputs the neccessary message if a player has won and returns true if there is
+     * a winner or draw and false otherwise
+     * @param game - current state of the board
+     * @return - true (if a win / draw ) false (otherwise)
+     */
+    public static boolean determineResultOutput(Board game) {
         if (isWinner(game, 'X')) {
             System.out.println(GameState.XWIN.getGameOutput());
             return true;
@@ -13,12 +20,19 @@ class Result {
             System.out.println(GameState.DRAW.getGameOutput());
             return true;
         } else {
-            //System.out.println(GameState.DNF.getGameOutput());
             return false;
         }
     }
 
-    private static boolean isWinner(Board game, char piece) {
+    /**
+     * isWinner(Board, char) 
+     * consumes the current state of the board and the player's piece and determines
+     * they have a winning combination
+     * @param game - current state of the board
+     * @param piece - player's piece type
+     * @return - whether or not they have a winning combination
+     */
+    public static boolean isWinner(final Board game, final char piece) {
         // ROW WINS?
         for (int i = 0; i < 3; i++) {
             if (game.board[i][0] == piece && game.board[i][1] == piece && game.board[i][2] == piece)

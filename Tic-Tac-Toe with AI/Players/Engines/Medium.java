@@ -1,9 +1,11 @@
 package tictactoe.Players.Engines;
 
-import tictactoe.Players.Engines.Engine;
 import tictactoe.Board;
+import tictactoe.Result;
 
 final public class Medium extends Engine {
+    final int difficultyIdentifier = 2;
+
     public Medium(char playerType) {
         this.playerType = playerType;
     }
@@ -18,11 +20,61 @@ final public class Medium extends Engine {
 
     @Override
     public void makeAMove(Board game) {
+        System.out.println("Making move level \"medium\"");
 
+        int[] coordOfWin;
+        // STEP 1 : DO I HAVE A WIN?
+        coordOfWin = findWinningMove(game, this.playerType);
+        if (coordOfWin != null) {
+            System.out.println();
+            game.placePiece(coordOfWin[0], coordOfWin[1], this.playerType);
+            game.displayBoard();
+            return;
+        }
+
+        // STEP 2 : BLOCK OPPONENTS WIN (IF THEY HAVE ONE)
+        if (this.playerType == 'O') {
+            coordOfWin = findWinningMove(game, 'X');
+        } else {
+            coordOfWin = findWinningMove(game, 'O');
+        }
+        
+        if(coordOfWin != null) {
+            game.placePiece(coordOfWin[0], coordOfWin[1], this.playerType);
+            game.displayBoard();
+            return;
+        }
+        
+        // STEP 3 : (LAST RESORT) MAKE A RANDOM MOVE
+        placePieceRandomly(game);
+        game.displayBoard();
     }
 
-    private int[] isOpponentWinning(Board game, char opponentType) {
-
-        return new int[]{0, 0};
+    /**
+     * findWinningMove(Board, char)
+     * consumes a game and the player type and returns the coordinates of the winning move
+     * if there is any. Returns NULL otherwise.
+     * @param game - the current state of the board
+     * @param playerType - the opponents pieces
+     * @return - the opponent's winning coordinates (if any)
+     */
+    private int[] findWinningMove(Board game, char playerType) {
+        for (int i = 1; i <= game.NO_OF_ROWS; i++) {
+            for (int j = 1; j <= game.NO_OF_COLUMNS; j++) {
+                if (game.board[i - 1][j - 1] == ' ') {
+                    game.board[i - 1][j - 1] = playerType;
+                    if (Result.isWinner(game, playerType)) {
+                        System.out.println("======== BEFORE ========");
+                        game.displayBoard();
+                        game.board[i - 1][j - 1] = ' ';
+                        System.out.println("======== AFTER ========");
+                        game.displayBoard();
+                        return new int[]{i, j};
+                    }
+                    game.board[i - 1][j - 1] = ' ';
+                }
+            }
+        }
+        return null;
     }
 }//end of class

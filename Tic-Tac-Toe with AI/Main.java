@@ -1,132 +1,111 @@
 package tictactoe;
 
-import tictactoe.Players.Easy;
+import tictactoe.Players.Engines.Easy;
+import tictactoe.Players.Engines.Hard;
+import tictactoe.Players.Engines.Medium;
+import tictactoe.Players.Humans.Human;
+import tictactoe.Players.Player;
 
 import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner command = new Scanner(System.in);
 
-        boolean isValidInput = false;
-        while (!isValidInput) {
-            System.out.println("Input command:");
-            String initCommand = command.next();
-            if (initCommand.equals("exit")) {
+        while (true) {
+            System.out.print("Input command: ");
+            String[] menuArgs = command.nextLine().split(" ");
+            if (menuArgs[0].equals("exit")) {
                 System.exit(0);
-            } else if (initCommand.equals("start")) {
-                String p1Status = command.next();
-                String p2Status = command.next();
-                if (p1Status.equals(PlayerState.HUMAN.getPlayerState())) {
-                    if (p2Status.equals(PlayerState.HUMAN.getPlayerState())) {
-                        setPlayerMatch(false, false);
-                    } else if (p2Status.equals(PlayerState.EASY_AI.getPlayerState())) {
-                        setPlayerMatch(false, true);
-                    } else {
-                        System.out.println("Bad parameters!");
-                        continue;
-                    }
-                    isValidInput = true;
-                } else if (p1Status.equals(PlayerState.EASY_AI.getPlayerState())) {
-                    if (p2Status.equals(PlayerState.HUMAN.getPlayerState())) {
-                        setPlayerMatch(true, false);
-                    } else if (p2Status.equals(PlayerState.EASY_AI.getPlayerState())) {
-                        setPlayerMatch(true, true);
-                    } else {
-                        System.out.println("Bad parameters!");
-                        continue;
-                    }
-                    isValidInput = true;
-                } else {
-                    System.out.println("Bad parameters");
-                }
-            } else {
-                break;
             }
-        }
-    }
+            if (menuArgs.length != 3) {
+                System.out.println("Bad parameters!");
+                continue;
+            }
+
+            String playOption = menuArgs[0];
+            if (playOption.equals("start")) {
+                String p1Status = menuArgs[1];
+                String p2Status = menuArgs[2];
+
+                // DETERMINE WHAT TYPE PLAYER 1 AND PLAYER 2 ARE 
+                int p1Difficulty = determinePlayerDifficulty(p1Status);
+                int p2Difficulty = determinePlayerDifficulty(p2Status);
+                if (p1Difficulty == 0 || p2Difficulty == 0) {
+                    continue;
+                }
+
+                // PLAY THE GAME
+                setPlayerMatch(p1Difficulty, p2Difficulty);
+            } else {
+                System.out.println("Bad parameters!");
+            }
+        } // while loop
+    } // end of void main(String[])
 
     /**
-     * setPlayerMatch(bool, bool) consumes the status of the 2 players and plays the game
-     *      of TTT until the finish
-     * @param isP1AI - status of Player 1
-     * @param isP2AI - status of Player 2
+     * determinePlayerDifficulty(String)
+     * consumes a String and determine what level of difficulty the player is (easy (1),
+     * medium (2) , hard (3), human (4)). Prints out an error message if invalid
+     * parameters are entered.
+     * @param playerStatus - user entered difficulty
+     * @return - player difficulty level
      */
-    private static void setPlayerMatch(boolean isP1AI, boolean isP2AI) {
+    private static int determinePlayerDifficulty(String playerStatus) {
+        if (playerStatus.equals(PlayerState.HUMAN.getPlayerState())) {
+            return 4;
+        } else if (playerStatus.equals(PlayerState.EASY_AI.getPlayerState())) {
+            return 1;
+        } else if (playerStatus.equals(PlayerState.MEDIUM_AI.getPlayerState())) {
+            return 2;
+        } else if (playerStatus.equals(PlayerState.HARD_AI.getPlayerState())) {
+            return 3;
+        }
+        System.out.println("Bad parameters!");
+        return 0;
+    }
+    
+    /**
+     * setPlayerMatch(bool, bool)
+     * consumes the status of the 2 players and plays the game of TTT until the finish
+     * @param p1Dif - difficulty level of Player 1
+     * @param p2Dif -  difficulty level of Player 2
+     */
+    private static void setPlayerMatch(int p1Dif, int p2Dif) {
         // SETTING UP THE BOARD
         Board board = new Board();
         board.displayBoard();
 
-        // DEFINING THE EASY PLAYER
-        Easy ePlayer1 = new Easy('X');
-        Easy ePlayer2 = new Easy('O');
-
+        boolean isWin;
+        Player p1 = determinePlayerState(p1Dif, 'X');
+        Player p2 = determinePlayerState(p2Dif, 'O');
+        
         while (!board.isComplete()) {
-
-            if (isP1AI) {
-                System.out.println("Making move level \"easy\"");
-                ePlayer1.makeAMove(board);
-                board.displayBoard();
-            } else {
-                int[] coord = acceptCoordinates();
-                board.placePiece(coord[0], coord[1], ePlayer1.getPlayerType());
+            // PLAYER 1 MAKES A MOVE
+            p1.makeAMove(board);
+            isWin = Result.determineResultOutput(board);
+            if (isWin) {
+                return;
             }
-
-            boolean result = Result.determineResultOutput(board);
-            if (result) {
-                System.exit(0);
-            }
-
-            if (isP2AI) {
-                System.out.println("Making move level \"easy\"");
-                ePlayer2.makeAMove(board);
-                board.displayBoard();
-            } else {
-                int[] coord = acceptCoordinates();
-                board.placePiece(coord[0], coord[1], ePlayer2.getPlayerType());
+            // PLAYER 2 MAKES A MOVE
+            p2.makeAMove(board);
+            isWin = Result.determineResultOutput(board);
+            if (isWin) {
+                return;
             }
         }
     }
 
-    /**
-     * acceptCoordinates() accepts the input of coordinates from the player
-     * @return - row and column of the input position as a int array
-     */
-    private static int[] acceptCoordinates() {
-        Scanner move = new Scanner(System.in);
-        int[] coord = new int[2];
-        System.out.println("Enter the coordinates:");
-        String coordinates = move.nextLine();
-        if (!isValidCoordinates(coordinates)) {
-            acceptCoordinates();
+    private static Player determinePlayerState(int playerDiff, char playerType) {
+        Player p = null;
+        if (playerDiff == 1) {
+            p = new Easy(playerType);
+        } else if (playerDiff == 2) {
+            p = new Medium(playerType);
+        } else if (playerDiff == 3) {
+            p = new Hard(playerType);
+        } else {
+            p = new Human(playerType);
         }
-        coordinates = coordinates.replaceAll(" ", "");
-        coord[0] = coordinates.charAt(0) - 48;
-        coord[1] = coordinates.charAt(1) - 48;
-        return coord;
-    }
-
-    /**
-     * isValidCoordinates(String) checks if the input string corresponds to valid 
-     *      coordinates on a 3x3 TTT board 
-     * @param coordinates - the input coordinates
-     * @return - whether or not the coordinates are valid.
-     */
-    public static boolean isValidCoordinates(String coordinates) {
-        try {
-            Integer.parseInt(coordinates.replaceAll(" ", ""));
-        } catch (Exception e) {
-            System.out.println("You should enter numbers!");
-            return false;
-        }
-        coordinates = coordinates.replaceAll(" ", "");
-        int row = coordinates.charAt(0) - 48;
-        int col = coordinates.charAt(1) - 48;
-
-        System.out.println(row + ":" + col);
-        if (row < 1 || row > 3 || col < 1 || col > 3) {
-            System.out.println("Coordinates should be from 1 to 3!");
-            return  false;
-        }
-        return true;
+        return p;
     }
 }

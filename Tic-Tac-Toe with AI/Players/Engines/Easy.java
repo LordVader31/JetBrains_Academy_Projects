@@ -3,6 +3,7 @@ package tictactoe.Players.Engines;
 import tictactoe.Board;
 
 final public class Easy extends Engine {
+    final int difficultyIdentifier = 1;
 
     public Easy(char playerType) {
         this.playerType = playerType;
@@ -18,16 +19,8 @@ final public class Easy extends Engine {
 
     @Override
     public void makeAMove(Board game) {
-
-        int[] randomCoord = generateRandomCoordinates();
-        int row = randomCoord[0];
-        int column = randomCoord[1];
-        while (game.board[row][column] == 'X' || game.board[row][column] == 'O') {
-            randomCoord = generateRandomCoordinates();
-            row = randomCoord[0];
-            column = randomCoord[1];
-        }
-
-        game.board[row][column] = playerType;
+        System.out.println("Making move level \"easy\"");
+        placePieceRandomly(game);
+        game.displayBoard();
     }// end of void makeMove(Board)
 }//end of class

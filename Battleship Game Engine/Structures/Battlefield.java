@@ -1,3 +1,5 @@
+package battleship.structures;
+
 class Battlefield {
     char[][] battlefield;
 

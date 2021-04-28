@@ -2,17 +2,17 @@
 
 This is a simple flowchart that displays the inheritance I have implemented for the different types of players to streamline the process of playing
 
-                                              ------------
-                                              |  PLAYER  |
-                                              ------------
+                                              --------------
+                                              |  (PLAYER)  |
+                                              --------------
                                                     |
                                                     |
                              ------------------------------------------
                              |                                         |
                              |                                         |
-                        -----------                               ----------
-                        |  ENGINE |                               |  HUMAN |
-                        -----------                               ----------
+                       -------------                               ----------
+                       | (ENGINE)  |                               |  HUMAN |
+                       -------------                               ----------
                              |
                              |
           --------------------------------------------
@@ -21,3 +21,5 @@ This is a simple flowchart that displays the inheritance I have implemented for 
      ---------          ------------            -----------
      |  EASY |          |  MEDIUM  |            |   HARD  |
      ---------          ------------            -----------
+
+Classes with () are abstract classes.

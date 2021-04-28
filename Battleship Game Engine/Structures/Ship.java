@@ -1,5 +1,6 @@
-class Ship {
+package battleship.Structures;
 
+class Ship {
     String name;
     int length;
     

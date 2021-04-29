@@ -1,12 +1,14 @@
+package tictactoe.Services;
+
 public enum GameState {
     DNF("Game not finished"),
     DRAW("Draw"),
-    XWIN("X Wins"),
-    OWIN("O Wins");
+    XWIN("X wins"),
+    OWIN("O wins");
 
     final String gameOutput;
 
-    public GameState(String gameOutput) {
+    GameState(String gameOutput) {
         this.gameOutput = gameOutput;
     }
 

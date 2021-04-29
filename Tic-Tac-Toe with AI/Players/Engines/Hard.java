@@ -4,8 +4,8 @@ import tictactoe.Services.*;
 
 final public class Hard extends Engine {
 
-    private static final int NEGATIVE_SCORE =  -100;
-    private static final int POSITIVE_SCORE = 100;
+    private static final int NEGATIVE_SCORE =  -10;
+    private static final int POSITIVE_SCORE = 10;
     private static final int NEUTRAL_SCORE = 0;
     private static final int MAX_DEPTH = 6;
 
@@ -23,13 +23,14 @@ final public class Hard extends Engine {
 
     @Override
     public void makeAMove(Board game) {
+        System.out.println("Making move level \"hard\"");
         int[] bestMove = new int[]{0, 0};
         int bestMoveVal = Integer.MIN_VALUE;
 
-        for (int i = 1; i <= game.NO_OF_ROWS; i++) {
-            for (int j = 1; j <= game.NO_OF_COLUMNS; j++) {
+        for (int i = 1; i <= game.getNO_OF_ROWS(); i++) {
+            for (int j = 1; j <= game.getNO_OF_COLUMNS(); j++) {
                 if (!game.isTileMarked(i, j)) {
-                    game.placePiece(i, j, 'X');
+                    game.placePiece(i, j, this.playerType);
                     int moveValue = miniMax(game, MAX_DEPTH, false);
                     game.removePiece(i, j);
                     if (moveValue > bestMoveVal) {
@@ -42,6 +43,7 @@ final public class Hard extends Engine {
         }
 
         game.placePiece(bestMove[0], bestMove[1], this.playerType);
+        game.displayBoard();
     }
     
     private int miniMax(Board game, int depth, boolean isMax) {
@@ -52,22 +54,51 @@ final public class Hard extends Engine {
         }
         if (isMax) {
             int highestVal = Integer.MIN_VALUE;
-            for (int )
+            for (int row = 1; row <= game.getNO_OF_ROWS(); row++) {
+                for (int col = 1; col <= game.getNO_OF_COLUMNS(); col++) {
+                    if (!game.isTileMarked(row, col)) {
+                        game.placePiece(row, col, this.getPlayerType());
+                        highestVal = Math.max(highestVal, miniMax(game, depth-1, false));
+                        game.removePiece(row, col);
+                    }
+                }
+            }
+            return highestVal;
         } else {
+            char opponentPlayerType = this.playerType == game.X ? game.O : game.X;
             int lowestVal = Integer.MAX_VALUE;
+            for (int row = 1; row <= game.getNO_OF_ROWS(); row++) {
+                for (int col = 1; col <= game.getNO_OF_COLUMNS(); col++) {
+                    if (!game.isTileMarked(row, col)) {
+                        game.placePiece(row, col, opponentPlayerType);
+                        lowestVal = Math.min(lowestVal, miniMax(game, depth-1, true));
+                        game.removePiece(row, col);
+                    }
+                }
+            }
+            return lowestVal;
         }
-        return 0;
     }
 
     private int evaluateBoard(Board game) {
-        boolean isXWin = Result.isWinner(game, 'X');
-        boolean isOWin = Result.isWinner(game, 'O');
-        if (isXWin && !isOWin) {
-            return POSITIVE_SCORE;
-        } else if (isOWin && !isXWin) {
-            return  NEGATIVE_SCORE;
+        boolean isXWin = Result.isWinner(game, game.X);
+        boolean isOWin = Result.isWinner(game, game.O);
+        if (this.playerType == game.X) {
+            if (isXWin && !isOWin) {
+                return  POSITIVE_SCORE;
+            } else if (isOWin && !isXWin) {
+                return NEGATIVE_SCORE;
+            } else {
+                return NEUTRAL_SCORE;
+            }
         } else {
-            return NEUTRAL_SCORE;
+            if (isXWin && !isOWin) {
+                return  NEGATIVE_SCORE;
+            } else if (isOWin && !isXWin) {
+                return POSITIVE_SCORE;
+            } else {
+                return NEUTRAL_SCORE;
+            }
         }
     }
 

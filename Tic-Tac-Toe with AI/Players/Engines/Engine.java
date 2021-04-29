@@ -1,27 +1,26 @@
 package tictactoe.Players.Engines;
 import tictactoe.Players.Player;
 import java.util.Random;
-import tictactoe.Board;
+import tictactoe.Services.Board;
 public abstract class Engine extends Player {
 
     private int[] generateRandomCoordinates() {
         Random random = new Random();
         int[] randomCoord = new int[2];
-        randomCoord[0] = random.nextInt(9) / 3 + 1;
-        randomCoord[1] = random.nextInt(9) % 3 + 1;
-
+        randomCoord[0] = Math.abs(random.nextInt()) % 3 + 1;
+        randomCoord[1] = Math.abs(random.nextInt()) % 3 + 1;
         return randomCoord;
     }
     
     protected void placePieceRandomly(Board game) {
         int[] randomCoord = generateRandomCoordinates();
-        int row = randomCoord[0] - 1;
-        int column = randomCoord[1] - 1;
-        while (game.board[row][column] == 'X' || game.board[row][column] == 'O') {
+        int row = randomCoord[0] ;
+        int column = randomCoord[1] ;
+        while (game.getPiece(row, column) == game.X || game.getPiece(row, column) == game.O) {
             randomCoord = generateRandomCoordinates();
-            row = randomCoord[0] - 1 ;
-            column = randomCoord[1] - 1;
+            row = randomCoord[0];
+            column = randomCoord[1];
         }
-        game.board[row][column] = playerType;
+        game.placePiece(row, column, playerType);
     }
 }

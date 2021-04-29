@@ -2,12 +2,14 @@
 
 # JetBrains Academy Projects
 A repository containing the codes for all my Java projects on the Java Developer Track. A list of them is below 
-* Simple Chatty Bot
-* Cinema Manager
-* Bulls And Cows
-* Battleship
+* Simple Chatty Bot ✅
+* Cinema Manager ✅
+* Bulls And Cows ✅
+* Battleship ✅
 * Numeric Matric Processor
-* Tic-Tac-Toe with AI
+* Tic-Tac-Toe with AI ✅
+* Readability Score
+* Encryption-Decryption 
 * Sorting Tool
 * Minesweeper
 * Search Engine

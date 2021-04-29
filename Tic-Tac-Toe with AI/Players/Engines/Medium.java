@@ -1,7 +1,7 @@
 package tictactoe.Players.Engines;
 
-import tictactoe.Board;
-import tictactoe.Result;
+import tictactoe.Services.Board;
+import tictactoe.Services.Result;
 
 final public class Medium extends Engine {
     final int difficultyIdentifier = 2;
@@ -34,17 +34,17 @@ final public class Medium extends Engine {
 
         // STEP 2 : BLOCK OPPONENTS WIN (IF THEY HAVE ONE)
         if (this.playerType == 'O') {
-            coordOfWin = findWinningMove(game, 'X');
+            coordOfWin = findWinningMove(game, game.X);
         } else {
-            coordOfWin = findWinningMove(game, 'O');
+            coordOfWin = findWinningMove(game, game.O);
         }
-        
+
         if(coordOfWin != null) {
             game.placePiece(coordOfWin[0], coordOfWin[1], this.playerType);
             game.displayBoard();
             return;
         }
-        
+
         // STEP 3 : (LAST RESORT) MAKE A RANDOM MOVE
         placePieceRandomly(game);
         game.displayBoard();
@@ -59,19 +59,15 @@ final public class Medium extends Engine {
      * @return - the opponent's winning coordinates (if any)
      */
     private int[] findWinningMove(Board game, char playerType) {
-        for (int i = 1; i <= game.NO_OF_ROWS; i++) {
-            for (int j = 1; j <= game.NO_OF_COLUMNS; j++) {
-                if (game.board[i - 1][j - 1] == ' ') {
-                    game.board[i - 1][j - 1] = playerType;
+        for (int i = 1; i <= game.getNO_OF_ROWS(); i++) {
+            for (int j = 1; j <= game.getNO_OF_COLUMNS(); j++) {
+                if (!game.isTileMarked(i, j)) {
+                    game.placePiece(i, j, playerType);
                     if (Result.isWinner(game, playerType)) {
-                        System.out.println("======== BEFORE ========");
-                        game.displayBoard();
-                        game.board[i - 1][j - 1] = ' ';
-                        System.out.println("======== AFTER ========");
-                        game.displayBoard();
+                        game.removePiece(i, j);
                         return new int[]{i, j};
                     }
-                    game.board[i - 1][j - 1] = ' ';
+                    game.removePiece(i, j);
                 }
             }
         }

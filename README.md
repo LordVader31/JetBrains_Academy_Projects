@@ -8,9 +8,13 @@ A repository containing the codes for all my Java projects on the Java Developer
 * Battleship ✅
 * Numeric Matric Processor
 * Tic-Tac-Toe with AI ✅
-* Readability Score
+* Readability Score ⏺
 * Encryption-Decryption 
 * Simple Bnaking System 
 * Sorting Tool
 * Minesweeper
 * Search Engine
+
+
+
+#### Legend : ✅ - Completed, ⏺ - Ongoing.

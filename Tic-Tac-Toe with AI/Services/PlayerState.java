@@ -1,4 +1,4 @@
-package tictactoe;
+package tictactoe.Services;
 
 public enum PlayerState {
     HUMAN("user"),
@@ -13,6 +13,6 @@ public enum PlayerState {
     }
 
     public String getPlayerState() {
-        return playerState;
+        return this.playerState;
     }
 }

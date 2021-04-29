@@ -1,4 +1,4 @@
-package tictactoe;
+package tictactoe.Services;
 
 final public class Result {
 
@@ -25,7 +25,7 @@ final public class Result {
     }
 
     /**
-     * isWinner(Board, char) 
+     * isWinner(Board, char)
      * consumes the current state of the board and the player's piece and determines
      * they have a winning combination
      * @param game - current state of the board
@@ -34,21 +34,26 @@ final public class Result {
      */
     public static boolean isWinner(final Board game, final char piece) {
         // ROW WINS?
-        for (int i = 0; i < 3; i++) {
-            if (game.board[i][0] == piece && game.board[i][1] == piece && game.board[i][2] == piece)
+        for (int i = 1; i <= 3; i++) {
+            if (game.getPiece(i, 1) == piece && game.getPiece(i, 2) == piece
+                    && game.getPiece(i, 3) == piece)
                 return true;
         }
 
         // COLUMN WINS?
-        for (int i = 0; i < 3; i++) {
-            if (game.board[0][i] == piece && game.board[1][i] == piece && game.board[2][i] == piece)
+        for (int i = 1; i <= 3; i++) {
+            if (game.getPiece(1, i) == piece && game.getPiece(2, i) == piece
+                    && game.getPiece(3, i) == piece)
                 return true;
         }
 
         // DIAGONAL WINS?
-        if (game.board[0][0] == piece && game.board[1][1] == piece && game.board[2][2] == piece)
+        if (game.getPiece(1, 1) == piece && game.getPiece(2, 2) == piece
+                && game.getPiece(3 ,3) == piece) {
             return true;
-        else
-            return game.board[0][2] == piece && game.board[1][1] == piece && game.board[2][0] == piece;
+        } else {
+            return game.getPiece(1, 3) == piece && game.getPiece(2, 2) == piece
+                    && game.getPiece(3, 1) == piece;
+        }
     }
 }

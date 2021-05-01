@@ -1,4 +1,4 @@
-## Readability Score Program
+# Readability Score Program
 
 This program assess how "readable" a piece of text is. It works on .txt files. There are 4 scoring indexes used in the Readability Assessement; 
 * Flesch-Kincaid Readability Test
@@ -7,7 +7,7 @@ This program assess how "readable" a piece of text is. It works on .txt files. T
 * Automated Readability Index
 
 ## How To Use the Indexes
-The program will prompt you to choose which test you want to evaluate the text. The options will be `(ARI, FK, SMOG, CL, all)`. An appropriate error message will be displayed if the option entered was not on the list. 
+The program will prompt you to choose which test you want to evaluate the text. The options will be `(ARI, FK, SMOG, CL, all)`. An appropriate error message will be displayed if the option entered was not on the list. **Only one option is allowed at a time**
 
 #### References
 [1] [Automated readability index](https://en.wikipedia.org/wiki/Automated_readability_index)  

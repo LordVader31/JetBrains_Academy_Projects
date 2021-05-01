@@ -1,14 +1,19 @@
 package readability;
+import readability.Indexes.Automated;
+import readability.Indexes.ReadabilityTest;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
+        Scanner txt = new Scanner(System.in);
         if (args.length < 1) {
             System.out.println("No file name supplied. Exiting program.");
             System.exit(0);
         }
 
+        // READING IN THE DATA
         StringBuilder data = new StringBuilder();
         File file = new File(args[0]);
         try (Scanner scanner = new Scanner(file)) {
@@ -19,7 +24,32 @@ public class Main {
             System.out.println("Error! Source file not found.");
         }
 
-        determineReadingLevel(data.toString());
+        // TESTS
+        System.out.print("Enter the score you want to calculate (ARI, FK, SMOG, CL, all): ");
+        char option = txt.next().trim().charAt(0);
+
+        double averageAge = 0d;
+        ReadabilityTest test1;
+        switch (option) {
+            case 'A' :
+                test1 = new Automated(data.toString());
+                test1.printData();
+
+                break;
+
+            case 'F':
+                break;
+
+            case 'S':
+                break;
+
+            case 'C':
+                break;
+
+            case 'a' :
+                break;
+        }
+        System.out.printf("This text should be understood on average by %.2f-year-olds.", averageAge);
     }
 
     public static void determineReadingLevel(String input) {
@@ -33,7 +63,7 @@ public class Main {
             WORDS += wordArray.length;
         }
 
-        final double SCORE = 4.71 * ((double) CHARACTERS / WORDS) + 0.5 * ((double) WORDS / SENTENCES) - 21.43;
+        final double SCORE = 4.71 * (1.0 * CHARACTERS / WORDS) + 0.5 * (1.0 * WORDS / SENTENCES) - 21.43;
 
         System.out.printf("The text is:\n%s\n", input);
 
@@ -56,8 +86,10 @@ public class Main {
             return "18-24";
         } else if (scoreAsInt == 14) {
             return "24+";
-        } else {
+        } else if (scoreAsInt < 3){
             return (scoreAsInt + 4) + "-" + (scoreAsInt + 5);
+        } else {
+            return (scoreAsInt + 5) + "-" + (scoreAsInt + 6);
         }
     }
 }

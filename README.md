@@ -9,7 +9,7 @@ A repository containing the codes for all my Java projects on the Java Developer
 * Numeric Matric Processor
 * Tic-Tac-Toe with AI ✅
 * Readability Score ⏺
-* Encryption-Decryption 
+* Guess The Animal
 * Simple Bnaking System 
 * Sorting Tool
 * Minesweeper

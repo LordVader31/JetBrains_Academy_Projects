@@ -7,14 +7,12 @@ A repository containing the codes for all my Java projects on the Java Developer
 * Bulls And Cows ✅
 * Battleship ✅
 * Numeric Matric Processor
-* Tic-Tac-Toe with AI ✅
-* Readability Score ✅
+* Tic-Tac-Toe with Unbeatable Engine ✅
+* Readability Score ✅ 
 * Guess The Animal ⏺
-* Simple Bnaking System 
+* Simple Banking System 
 * Sorting Tool
 * Minesweeper
 * Search Engine
-
-
 
 #### Legend : ✅ - Completed, ⏺ - Ongoing.

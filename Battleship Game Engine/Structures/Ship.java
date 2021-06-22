@@ -1,6 +1,6 @@
-package battleship.Structures;
-
-class Ship {
+package Structures;
+import java.util.Scanner;
+public class Ship {
     String name;
     int length;
     
@@ -14,7 +14,7 @@ class Ship {
         this.length = length;
     }
 
-    protected void placeShip(Battlefield bf) {
+    public void placeShip(Battlefield bf) {
         Scanner sc = new Scanner(System.in);
         System.out.println("\nEnter the coordinates of the " + name + " (" + length + " cells): ");
         while (true) {

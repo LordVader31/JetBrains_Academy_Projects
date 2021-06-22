@@ -1,7 +1,7 @@
-package battleship.structures;
-
-class Battlefield {
-    char[][] battlefield;
+package Structures;
+import java.util.Arrays;
+public class Battlefield {
+    public char[][] battlefield;
 
     public Battlefield() {
         battlefield  = new char[10][10];
@@ -12,7 +12,7 @@ class Battlefield {
         }
     }
 
-    protected void printBattlefield(boolean isWartime) {
+    public void printBattlefield(boolean isWartime) {
         System.out.print("\n  ");
         for (int i = 1; i <= 10; i++){
             System.out.print(i + " ");
@@ -30,7 +30,7 @@ class Battlefield {
         System.out.println("\n");
     }
 
-    protected boolean isCorrectCoordinates(char roF, char roS, int coF, int coS, Ship ship) {
+    public boolean isCorrectCoordinates(char roF, char roS, int coF, int coS, Ship ship) {
 
         // CHECK FOR COORDINATES OUTSIDE THE BOARD
         if (roF > 'J' || roF < 'A' || roS > 'J' || roS < 'A') {
@@ -76,7 +76,7 @@ class Battlefield {
         return false;
     }
 
-    protected boolean isTouching(char roF, char roS, int coF, int coS, boolean isWartime) {
+    public boolean isTouching(char roF, char roS, int coF, int coS, boolean isWartime) {
         // CHECK FOR TOUCHING OTHER SHIPS OR PIECES OF SHIPS
         boolean touch = false;
         for (int i = roF - 65; i <= roS - 65; i++) {

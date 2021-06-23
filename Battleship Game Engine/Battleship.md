@@ -1,4 +1,4 @@
-## Battleship Game Engine
+# Battleship Game Engine Guide
 
 This package contains a fully functioning Player v. Player Battleship Game engine that can 
 * Print the battlefield(s)
